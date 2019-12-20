@@ -42,7 +42,7 @@ function find_property_in_object($object, $path, $delimiter='.') {
       }
       return $obj[$pathElement];
     }
-    return $obj->{$pathElement};
+    return property_exists($obj, $pathElement) ? $obj->{$pathElement} : null;
   };
   return array_reduce(explode($delimiter, $path), $each, $object);
 }
