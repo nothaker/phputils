@@ -231,9 +231,15 @@ function extract_element_by_path($input, string $path, string $delimiter=IW_PATH
     }
 
     // check key or property access
-    $isGettable=is_array($element)
-      ? array_key_exists($pathItem, $element)
-      : property_exists($element, $pathItem);
+    // the "isset" function is not suitable, because null is also a value
+    $isGettable=false;
+    if (is_array($element)) { // classic arrays
+      $isGettable=array_key_exists($pathItem, $element);
+    } elseif ($element instanceof \ArrayAccess) { // ArrayAccess interface
+      $isGettable=$element->offsetExists($pathItem);
+    } else { // default behavior = stdClass
+      $isGettable=property_exists($element, $pathItem);
+    }
 
     if (!$isGettable && is_object($element)) {
       throw new IwException(sprintf("Unknown property '%s'. Path {%s}, Item {%s}, Class {%s} ",
