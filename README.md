@@ -8,7 +8,7 @@ boilerplate code
  * @param string $delimiter Path delimiter
  * @return mixed 
  */
-function find_property_in_object($object, $path, $delimiter);
+function extract_element_by_path($object, $path, $delimiter, $options);
 ```
 ```php
 $target=new stdClass();
@@ -17,11 +17,34 @@ $test=new stdClass();
 $test->foo=new stdClass();
 $test->foo->bar=[$target];
 
-echo find_property_by_path($object, 'foo.bar.0.prop');
-echo find_property_by_path($object, 'foo/bar/0/prop', '/');
-echo find_property_by_path($object, 'foo/bar/@first/prop', '/');
-echo find_property_by_path($object, 'foo/bar/@last/prop', '/');
-$array=find_property_by_path($object, 'foo/bar', '/');
+echo extract_element_by_path($object, 'foo.bar.0.prop');
+echo extract_element_by_path($object, 'foo/bar/0/prop', '/');
+echo extract_element_by_path($object, 'foo/bar/@first/prop', '/');
+echo extract_element_by_path($object, 'foo/bar/@last/prop', '/');
+$array=extract_element_by_path($object, 'foo/bar', '/');
+```
+
+or usable with @collect anchor
+
+```php
+$array=[
+  'foo'=>[
+    ['bar' => 1],
+    ['bar' => 2],
+    ['bar' => 2],
+    ['bar' => 4]
+  ]
+];
+
+// no grouping
+
+$values=extract_element_by_path($array, 'foo/@collect/bar', '/');
+// $values == [1,2,2,4]
+
+// with grouping
+// also support multiple @collect anchors
+$values=extract_element_by_path($array, 'foo/@collect/bar', '/', IW_UNIQUE_OPTION);
+// $values == [1,2,4]
 ```
 
 ```php
