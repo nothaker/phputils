@@ -125,6 +125,11 @@ function array_last(array $input) {
  * @return array|mixed
  */
 function extract_element_by_path($input, string $path, string $delimiter=IW_PATH_DEFAULT_DELIMITER, int $options=0) {
+  // empty path protection
+  if (trim($path)==='' || $path===null) {
+    return $input;
+  }
+
   $uniqueMap=[];
 
   $enter=function($pathItems, $element, $deepIndex) use(&$enter, &$uniqueMap, $delimiter, $path, $options) {
