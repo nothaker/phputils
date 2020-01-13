@@ -272,3 +272,14 @@ function extract_element_by_path($input, string $path, string $delimiter=IW_PATH
   };
   return $enter(explode($delimiter, trim($path)), $input, 0);
 }
+
+/**
+ * Get shortname of class without namespaces
+ * @param \stdClass $object
+ * @return string
+ */
+function get_short_class($object) : string {
+  $className=trim(get_class($object), '\\');
+  $chunks=explode('\\', $className);
+  return array_last($chunks);
+}
